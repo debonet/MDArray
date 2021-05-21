@@ -1,8 +1,8 @@
 {
   "name": "@debonet/mdarray",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Multidimensional arrays for JS",
-  "main": "src/mdarray.js",
+  "main": "src/MDArray.js",
   "directories": {
     "test": "test"
   },
@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/debonet/mdarray.git"
+    "url": "git+https://github.com/debonet/MDArray.git"
   },
   "keywords": [
     "Multidimensional",
@@ -23,9 +23,9 @@
   "author": "Jeremy De Bonet",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/debonet/mdarray/issues"
+    "url": "https://github.com/debonet/MDArray/issues"
   },
-  "homepage": "https://github.com/debonet/mdarray#readme",
+  "homepage": "https://github.com/debonet/MDArray#readme",
   "devDependencies": {
     "jest": "^26.6.3"
   }
