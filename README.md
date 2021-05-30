@@ -172,14 +172,55 @@ returns the index of the first value of the MDArary for which `f()` applied to t
 ## MDArray.prototype.makeCopy( ... )
 ## MDArray.prototype.map( ... )
 ## MDArray.prototype.size( ... )
+## MDArray.prototype.reduce( ... )
+## MDArray.prototype.slice( ... )
+
+# Element-By-Element Operators
+
+## add( <MDArray>|<value> )
+## sub( <MDArray>|<value> )
+## mul( <MDArray>|<value> )
+## div( <MDArray>|<value> )
+## mod( <MDArray>|<value> )
+## and( <MDArray>|<value> )
+## or( <MDArray>|<value> ) 
+## eq( <MDArray>|<value> ) 
+## ne( <MDArray>|<value> ) 
+## neq( <MDArray>|<value> ) 
+## lt( <MDArray>|<value> ) 
+## lte( <MDArray>|<value> ) 
+## gt( <MDArray>|<value> ) 
+## gte( <MDArray>|<value> ) 
+## bitand( <MDArray>|<value> )
+## bitor( <MDArray>|<value> ) 
+## bitxor( <MDArray>|<value> ) 
+
+
+# Element-By-Element Reflexive Operators
+
+## setToAdd( <MDArray>|<value> )
+## setToSub( <MDArray>|<value> )
+## setToMul( <MDArray>|<value> )
+## setToDiv( <MDArray>|<value> )
+## setToMod( <MDArray>|<value> )
+## setToAnd( <MDArray>|<value> )
+## setToOr( <MDArray>|<value> ) 
+## setToEq( <MDArray>|<value> ) 
+## setToNe( <MDArray>|<value> ) 
+## setToNeq( <MDArray>|<value> ) 
+## setToLt( <MDArray>|<value> ) 
+## setToLte( <MDArray>|<value> ) 
+## setToGt( <MDArray>|<value> ) 
+## setToGte( <MDArray>|<value> ) 
+## setToBitand( <MDArray>|<value> )
+## setToBitor( <MDArray>|<value> ) 
+## setToBitxor( <MDArray>|<value> ) 
+
 
 
 # Not yet implemented
 
-## MDArray.prototype.reduce( ... )
-## MDArray.prototype.slice( ... )
 ## MDArray.prototype.splice( ... )
-
 
 
 
