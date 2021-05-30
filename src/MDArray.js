@@ -306,6 +306,44 @@ class MDArray extends Array{
 
 	// -----------------------------------------------------------
 	// -----------------------------------------------------------
+	slice( vnStart, vnEnd ){
+		let nStart, nEnd, vnStartNext, vnEndNext;
+		
+		if (Array.isArray( vnStart )){
+			nStart = vnStart[ 0 ] ?? 0;
+			vnStartNext = vnStart.slice( 1 );
+		}
+		else{
+			nStart = vnStart ?? 0;
+			vnStartNext = vnStart;
+		}
+
+		if (Array.isArray( vnEnd )){
+			nEnd = vnEnd[ 0 ] ?? this.length;
+			vnEndNext = vnEnd.slice( 1 );
+		}
+		else{
+			nEnd = vnEnd ?? this.length;
+			vnEndNext = vnEnd;
+		}
+		
+		const v = new Array(nEnd - nStart);
+
+		if (this.dimensions > 1){
+			for ( let n = nStart; n < nEnd; n ++ ){
+				v[ n - nStart ] = this[ n ].slice( vnStartNext, vnEndNext );
+			}
+		}
+		else{
+			for ( let n = nStart; n < nEnd; n ++ ){
+				v[ n - nStart ] = this[ n ];
+			}
+		}
+		return new MDArray( v );
+	}
+
+	// -----------------------------------------------------------
+	// -----------------------------------------------------------
 	* loop (){
 		yield* MDArray.loop(this);
 	}
