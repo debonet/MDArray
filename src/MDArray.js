@@ -19,29 +19,10 @@ function fbIsNumber( x ){
 // ---------------------------------------------------------------------------
 // ---------------------------------------------------------------------------
 class MDArray extends Array{
-	static #afOperations = {
-		"add" : ( x1, x2 ) => x1 + x2,
-		"sub" : ( x1, x2 ) => x1 - x2,
-		"mul" : ( x1, x2 ) => x1 * x2,
-		"div" : ( x1, x2 ) => x1 / x2,
-		"mod" : ( x1, x2 ) => x1 % x2,
-		"and" : ( x1, x2 ) => x1 && x2,
-		"or"  : ( x1, x2 ) => x1 || x2,
-		"eq"  : ( x1, x2 ) => x1 == x2,
-		"ne"  : ( x1, x2 ) => x1 != x2,
-		"neq"  : ( x1, x2 ) => x1 != x2,
-		"lt"  : ( x1, x2 ) => x1 < x2,
-		"lte"  : ( x1, x2 ) => x1 <= x2,
-		"gt"  : ( x1, x2 ) => x1 > x2,
-		"gte"  : ( x1, x2 ) => x1 >= x2,
-		"bitand" : ( x1, x2 ) => x1 & x2,
-		"bitor"  : ( x1, x2 ) => x1 | x2,
-		"bitxor"  : ( x1, x2 ) => x1 ^ x2,
-	}
-	
 	// -----------------------------------------------------------
 	// -----------------------------------------------------------
 	constructor( ...vx ){
+
 		// new MDArray( <mdarray> )
 		if ( MDArray.isMDArray( vx[ 0 ])){
 			return vx[ 0 ];
@@ -85,32 +66,6 @@ class MDArray extends Array{
 			);
 		}
 
-		/*
-		const afOp = {
-			"add" : ( x1, x2 ) => x1 + x2,
-			"sub" : ( x1, x2 ) => x1 - x2,
-			"mul" : ( x1, x2 ) => x1 * x2,
-			"div" : ( x1, x2 ) => x1 / x2,
-			"mod" : ( x1, x2 ) => x1 % x2,
-			"and" : ( x1, x2 ) => x1 && x2,
-			"or"  : ( x1, x2 ) => x1 || x2,
-			"bitand" : ( x1, x2 ) => x1 & x2,
-			"bitor"  : ( x1, x2 ) => x1 | x2,
-			"bitxor"  : ( x1, x2 ) => x1 ^ x2,
-		}
-
-		for ( const sOp in afOp ){
-			Object.defineProperty(
-				this, sOp, {
-					value : this.#fOperator.bind( this, afOp[ sOp ]),
-					configurable: true
-				}
-			);
-		}
-			
-
-		*/
-		
 	}
 
 	// -----------------------------------------------------------
@@ -185,7 +140,10 @@ class MDArray extends Array{
 		return (
 			x
 				&& typeof( x ) === 'object'
-				&& x.constructor.name === "MDArray"
+				&& (
+					x.constructor.name === "MDArray"
+						|| x.constructor.name === "MDArrayProxify"
+				)
 		);
 	}
 
@@ -390,84 +348,6 @@ class MDArray extends Array{
 
 	// -----------------------------------------------------------
 	// -----------------------------------------------------------
-	#fOperator( fOp, x ){
-		const v = new Array( this.length );
-		const c = this.length;
-		
-		if ( this.dimensions > 1 ){
-			if ( MDArray.isMDArray( x ) && this.length == x.length ){
-				for ( let n = 0; n < c; n ++ ){
-					v[ n ] = this[ n ].#fOperator( fOp, m[ n ]);
-				}
-			}
-			else{
-				for ( let n = 0; n < c; n ++ ){
-					v[ n ] = this[ n ].#fOperator( fOp, x );
-				}
-			}
-		}
-		else{
-			if ( Array.isArray( x ) || MDArray.isMDArray( x )){
-				if ( this.dimensions != 1 || this.length != x.length ){
-					throw ("dimensions don't match");
-				}
-
-				for ( let n = 0; n < c; n ++ ){
-					v[ n ] = fOp( this[ n ], m[ n ]);
-				}
-				
-			}
-			else{
-				for ( let n = 0; n < c; n ++ ){
-					v[ n ] = fOp( this[ n ], x );
-				}
-			}
-		}
-		
-		return new MDArray( v );
-	}
-
-	// -----------------------------------------------------------
-	// -----------------------------------------------------------
-	#fReflexiveOperator( fOp, x ){
-		const c = this.length;
-		
-		if ( this.dimensions > 1 ){
-			if ( MDArray.isMDArray( x ) && this.length == x.length ){
-				for ( let n = 0; n < c; n ++ ){
-					this[ n ].#fReflexiveOperator( fOp, m[ n ]);
-				}
-			}
-			else{
-				for ( let n = 0; n < c; n ++ ){
-					this[ n ].#fReflexiveOperator( fOp, x );
-				}
-			}
-		}
-		else{
-			if ( Array.isArray( x ) || MDArray.isMDArray( x )){
-				if ( this.dimensions != 1 || this.length != x.length ){
-					throw ("dimensions don't match");
-				}
-
-				for ( let n = 0; n < c; n ++ ){
-					this[ n ] = fOp( this[ n ], m[ n ]);
-				}
-				
-			}
-			else{
-				for ( let n = 0; n < c; n ++ ){
-					this[ n ] = fOp( this[ n ], x );
-				}
-			}
-		}
-		
-		return this;
-	}
-
-														 
-	// -----------------------------------------------------------
-	// -----------------------------------------------------------
 	* loop (){
 		yield* MDArray.loop(this);
 	}
@@ -516,10 +396,10 @@ class MDArray extends Array{
 			let x = xTarget[ xIndex ];
 
 			// attached operators on the fly
-			if ( !x ){
+			if ( !x && typeof( xIndex ) == 'string' ){
 				// operators
 				if ( xIndex in MDArray.#afOperations ){
-					x = xTarget.#fOperator.bind(
+					x = xTarget.applyOperation.bind(
 						xTarget, MDArray.#afOperations[ xIndex ]
 					);
 				}
@@ -527,7 +407,7 @@ class MDArray extends Array{
 				else if ( xIndex.substr( 0, 5 ) == 'setTo' ){
 					const sOp = xIndex[ 5 ].toLowerCase() + xIndex.substr( 6 );
 					if ( sOp in MDArray.#afOperations ){
-						x = xTarget.#fReflexiveOperator.bind(
+						x = xTarget.applyReflexiveOperation.bind(
 							xTarget, MDArray.#afOperations[ sOp ]
 						);
 					}
@@ -536,7 +416,7 @@ class MDArray extends Array{
 			
 			// functions
 			if (x instanceof Function){
-				return (...vx)=> {
+				return function MDArrayProxify (...vx) {
 					const xResult = x.bind( xTarget.raw )( ...vx );
 					if ( MDArray.isMDArray( xResult )){
 						Object.defineProperty( xResult, 'raw', { value : xResult });
@@ -582,13 +462,151 @@ class MDArray extends Array{
 			return true;
 		}
 	}
-};
 
+
+
+	// -----------------------------------------------------------
+	// Operations
+	// -----------------------------------------------------------
+	static #afOperations = {
+		"add" : ( ...vx ) => vx.reduce((x1, x2)=>x1 + x2),
+		"sub" : 	( ...vx ) => vx.reduce((x1, x2)=>x1 - x2),
+		"mul" : 	( ...vx ) => vx.reduce((x1, x2)=>x1 * x2),
+		"div" : 	( ...vx ) => vx.reduce((x1, x2)=>x1 / x2),
+		"mod" : 	( ...vx ) => vx.reduce((x1, x2)=>x1 % x2),
+		"and" : 	( ...vx ) => vx.reduce((x1, x2)=>x1 && x2),
+		"or"  : 	( ...vx ) => vx.reduce((x1, x2)=>x1 || x2),
+		"eq"  : 	( ...vx ) => vx.reduce((x1, x2)=>x1 == x2),
+		"ne"  : 	( ...vx ) => vx.reduce((x1, x2)=>x1 != x2),
+		"neq"  : 	( ...vx ) => vx.reduce((x1, x2)=>x1 != x2),
+		"lt"  : 	( ...vx ) => vx.reduce((x1, x2)=>x1 < x2),
+		"lte"  : 	( ...vx ) => vx.reduce((x1, x2)=>x1 <= x2),
+		"gt"  : 	( ...vx ) => vx.reduce((x1, x2)=>x1 > x2),
+		"gte"  : 	( ...vx ) => vx.reduce((x1, x2)=>x1 >= x2),
+		"bitand" : 	( ...vx ) => vx.reduce((x1, x2)=>x1 & x2),
+		"bitor"  : 	( ...vx ) => vx.reduce((x1, x2)=>x1 | x2),
+		"bitxor"  : 	( ...vx ) => vx.reduce((x1, x2)=>x1 ^ x2),
+		"pow"  : 	( ...vx ) => vx.reduce(Math.pow(x1, x2)),
+		"max"  : 	( ...vx ) => vx.reduce((x1, x2)=>x1>x2?x1:x2),
+		"min"  : 	( ...vx ) => vx.reduce((x1, x2)=>x1<x2?x1:x2),
+	}
+	
+
+	// -----------------------------------------------------------
+	// -----------------------------------------------------------
+	static #applyOperation_internal( fOp, size, ...vx ){
+		const c = size[ 0 ];
+		const m = new MDArray( ...size );
+		
+		if ( size.length > 1 ){
+			for ( let n = 0; n < c; n ++ ){
+				const vxNext = vx.map(( x ) => (
+					( MDArray.isMDArray( x ) && c == x.length )
+						? x[ n ]
+						: x
+				));
+				m[ n ] = MDArray.#applyOperation_internal(
+					fOp, size.slice( 1 ), ...vxNext
+				);
+			}
+		}
+		else{
+			for ( let n = 0; n < c; n ++ ){
+				const vxNext = vx.map(( x ) => (
+					( Array.isArray( x ) || MDArray.isMDArray( x ))
+						? x[ n ]
+						: x
+				));
+				m[ n ] = fOp( ...vxNext );
+			}
+		}
+
+		return m; 
+	}
+														 
+	// -----------------------------------------------------------
+	// -----------------------------------------------------------
+	static applyOperation( fOp, ...vx ){
+		let m = undefined;
+		let cDimMax = -1;
+		
+		for ( const n in vx ){
+			if (
+				MDArray.isMDArray( vx[ n ])
+					&& cDimMax < vx[ n ].dimensions
+			){
+				cDimMax = vx[ n ].dimensions;
+				m = vx[ n ];
+			}
+		}
+		
+		if (!m){
+			throw( "at least one argument must be a MDArray" );
+		}
+		
+		return MDArray.#applyOperation_internal(
+			fOp, m.size, ...vx
+		);
+	}
+
+
+	// -----------------------------------------------------------
+	// -----------------------------------------------------------
+	applyReflexiveOperation( fOp, ...vx ){
+		const c = this.length;
+
+		if ( this.dimensions > 1 ){
+			for ( let n = 0; n < c; n ++ ){
+				const vxNext = vx.map(( x ) => (
+					( MDArray.isMDArray( x ) && c == x.length )
+						? x[ n ]
+						: x
+				));
+				this[ n ].applyOperation( fOp, ...vxNext );
+			}
+		}
+		else{
+			for ( let n = 0; n < c; n ++ ){
+				const vxNext = vx.map(( x ) => (
+					( Array.isArray( x ) || MDArray.isMDArray( x ))
+						? x[ n ]
+						: x
+				));
+				this[ n ] = fOp( this[ n ], ...vxNext );
+			}
+		}
+		
+		return this;
+	}
+
+	// -----------------------------------------------------------
+	// -----------------------------------------------------------
+	applyOperation( fOp, ...vx ){
+		return MDArray.#applyOperation_internal(
+			fOp, this.size, this, ...vx
+		);
+	}
+
+	// -----------------------------------------------------------
+	// -----------------------------------------------------------
+	static #_initialize = (()=>{
+		for ( const sOp in MDArray.#afOperations ){
+			MDArray[ sOp ] = MDArray.applyOperation.bind(
+				null, MDArray.#afOperations[ sOp ]
+			);
+			MDArray.easy[ sOp ] = MDArray.applyOperation.bind(
+				null, MDArray.#afOperations[ sOp ]
+			);
+		}
+	})();
+
+	
+};
+	
 
 // ---------------------------------------------------------------------------
 // ---------------------------------------------------------------------------
 MDArray.Range = MDArray.easy.Range = class extends Array {
-	
 }
 
 // ---------------------------------------------------------------------------
