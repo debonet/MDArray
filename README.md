@@ -45,45 +45,38 @@ Looping is also vastly simplified:
 	for ( const index of myMDArray ){
 		myMDArray[ index ] = index.join('');
 	}
-
-	console.log( myMDArray );
-	
-	/* outputs:
-
-				MDArray(2) [
-					MDArray(3) [
-						MDArray(4) [ '000', '001', '002', '003' ],
-						MDArray(4) [ '010', '011', '012', '013' ],
-						MDArray(4) [ '020', '021', '022', '023' ]
-					],
-					MDArray(3) [
-						MDArray(4) [ '100', '101', '102', '103' ],
-						MDArray(4) [ '110', '111', '112', '113' ],
-						MDArray(4) [ '120', '121', '122', '123' ]
-					]
-				]
-	*/
-	
-	
 ```
+
+> Result:
+>		MDArray(2) [
+>			MDArray(3) [
+>				MDArray(4) [ '000', '001', '002', '003' ],
+>				MDArray(4) [ '010', '011', '012', '013' ],
+>				MDArray(4) [ '020', '021', '022', '023' ]
+>			],
+>			MDArray(3) [
+>				MDArray(4) [ '100', '101', '102', '103' ],
+>				MDArray(4) [ '110', '111', '112', '113' ],
+>				MDArray(4) [ '120', '121', '122', '123' ]
+>			]
+>		]
 
 ## sub-arrays
 
 ```javascript
 	const myMDArray = new MDArray(2,3,4).fill(0);
 	myMDArray[1].fill(1);
-	
-	/* yields:
-	
-		[ [ [ 0, 0, 0, 0 ],
-				[ 0, 0, 0, 0 ],
-				[ 0, 0, 0, 0 ] ], 
-			[ [ 1, 1, 1, 1 ], 
-				[ 1, 1, 1, 1 ], 
-				[ 1, 1, 1, 1 ] ] ] 
-	*/
 ```
-	
+
+> yields:
+>	
+>		[ [ [ 0, 0, 0, 0 ],
+>				[ 0, 0, 0, 0 ],
+>				[ 0, 0, 0, 0 ] ], 
+>			[ [ 1, 1, 1, 1 ], 
+>				[ 1, 1, 1, 1 ], 
+>				[ 1, 1, 1, 1 ] ] ] 
+
 
 ## suite
 
@@ -91,13 +84,12 @@ Much of the functionality of the native Array() class has been replicated with s
 
 ```javascript
 	const myMDArray = new MDArray(2,3,4,5,6).fill("haystack");
-	myMDArray[[ 1, 1, 1, 1, 1 ]] = "needle";
-
+	myMDArray[ [ 1, 1, 1, 1, 1 ] ] = "needle";
+	
 	myMDArray.indexOf("needle") // == [ 1, 1, 1, 1, 1 ]
 ```
 
 More to be added in future releases.
-
 
 
 ## functional methods
@@ -336,28 +328,28 @@ In the case of a <triplet> the range is assumed to be <pair>[0] to <pair>[2] wit
 	for ( const index of MDArray.loop( 3, [ 1, 4 ], [-1, -2, -5 ], )){
 		console.log("\t\t\t",index);
 	}
-
-	/* output
-			 [ 0, 1, -1 ]
-			 [ 0, 1, -3 ]
-			 [ 0, 2, -1 ]
-			 [ 0, 2, -3 ]
-			 [ 0, 3, -1 ]
-			 [ 0, 3, -3 ]
-			 [ 1, 1, -1 ]
-			 [ 1, 1, -3 ]
-			 [ 1, 2, -1 ]
-			 [ 1, 2, -3 ]
-			 [ 1, 3, -1 ]
-			 [ 1, 3, -3 ]
-			 [ 2, 1, -1 ]
-			 [ 2, 1, -3 ]
-			 [ 2, 2, -1 ]
-			 [ 2, 2, -3 ]
-			 [ 2, 3, -1 ]
-			 [ 2, 3, -3 ]
-	*/
 ```
+
+> output
+>			 [ 0, 1, -1 ]
+>			 [ 0, 1, -3 ]
+>			 [ 0, 2, -1 ]
+>			 [ 0, 2, -3 ]
+>			 [ 0, 3, -1 ]
+>			 [ 0, 3, -3 ]
+>			 [ 1, 1, -1 ]
+>			 [ 1, 1, -3 ]
+>			 [ 1, 2, -1 ]
+>			 [ 1, 2, -3 ]
+>			 [ 1, 3, -1 ]
+>			 [ 1, 3, -3 ]
+>			 [ 2, 1, -1 ]
+>			 [ 2, 1, -3 ]
+>			 [ 2, 2, -1 ]
+>			 [ 2, 2, -3 ]
+>			 [ 2, 3, -1 ]
+>			 [ 2, 3, -3 ]
+
 
 ## MDArray.loop( <mdarray> )
 
@@ -370,43 +362,38 @@ loops over over point in the given MDArray.
 iterates over the neighborhood of size radius surrounding, but not including, the indexed point. e.g.:
 
 ```javascript
-
 	for ( const index of MDArray.loopAround( [3,4], 1 )){
 		console.log("\t\t\t",index);
 	}
-
-	/* output
-			 [ 2, 3 ]
-			 [ 2, 4 ]
-			 [ 2, 5 ]
-			 [ 3, 3 ]
-			 [ 3, 5 ]  <--- notice [3, 4] does not appear
-			 [ 4, 3 ]
-			 [ 4, 4 ]
-			 [ 4, 5 ]
-	*/
 ```
+
+> output
+>			 [ 2, 3 ]
+>			 [ 2, 4 ]
+>			 [ 2, 5 ]
+>			 [ 3, 3 ]
+>			 [ 3, 5 ]  <--- notice [3, 4] does not appear
+>			 [ 4, 3 ]
+>			 [ 4, 4 ]
+>			 [ 4, 5 ]
 
 ## MDArray.loopUpDown( <index>[, <radius = 1>] )
 
 loops along each dimension separately, within the provided radius, e.g.:
 
-
 ```javascript
-
 	for ( const index of MDArray.loopUpDown( [3,4], 2 )){
 		console.log("\t\t\t",index);
 	}
-
-	/* output
-			 [ 1, 4 ] // loop 2 before in dimension 0
-			 [ 2, 4 ]
-			 [ 4, 4 ] // loop 2 after in dimension 0
-			 [ 5, 4 ]
-			 [ 3, 2 ] // loop 2 before in dimension 1
-			 [ 3, 3 ]
-			 [ 3, 5 ] // loop 2 after in dimension 1
-			 [ 3, 6 ]
-	*/
 ```
+> output
+>			 [ 1, 4 ] // loop 2 before in dimension 0
+>			 [ 2, 4 ]
+>			 [ 4, 4 ] // loop 2 after in dimension 0
+>			 [ 5, 4 ]
+>			 [ 3, 2 ] // loop 2 before in dimension 1
+>			 [ 3, 3 ]
+>			 [ 3, 5 ] // loop 2 after in dimension 1
+>			 [ 3, 6 ]
+
 
