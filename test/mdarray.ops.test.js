@@ -61,3 +61,18 @@ test("MDArray.sub( number, MDArray )", ()=>{
 
 
 
+test("MDArray.max( number, MDArray )", ()=>{
+	const mTest = MDArray.max( 1020, m );
+	
+	expect(mTest.toString()).toBe([
+		'[ [ [ 1020, 1020 ],',
+		'    [ 1020, 1020 ] ],',
+		'  [ [ 1100, 1101 ],',
+		'    [ 1110, 1111 ] ] ]'
+	].join('\n'));
+
+	expect(m.reduce((z1,z2)=>z1>z2?z1:z2)).toBe(1111);
+});
+
+
+

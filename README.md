@@ -175,49 +175,91 @@ returns the index of the first value of the MDArary for which `f()` applied to t
 ## MDArray.prototype.reduce( ... )
 ## MDArray.prototype.slice( ... )
 
+
+
 # Element-By-Element Operators
 
-## add( [ mdarray | array | value ]* )
-## sub( [ mdarray | array | value ]* )
-## mul( [ mdarray | array | value ]* )
-## div( [ mdarray | array | value ]* )
-## mod( [ mdarray | array | value ]* )
-## and( [ mdarray | array | value ]* )
-## or( [ mdarray | array | value ]* ) 
-## eq( [ mdarray | array | value ]* ) 
-## ne( [ mdarray | array | value ]* ) 
-## neq( [ mdarray | array | value ]* ) 
-## lt( [ mdarray | array | value ]* ) 
-## lte( [ mdarray | array | value ]* ) 
-## gt( [ mdarray | array | value ]* ) 
-## gte( [ mdarray | array | value ]* ) 
-## bitand( [ mdarray | array | value ]* )
-## bitor( [ mdarray | array | value ]* ) 
-## bitxor( [ mdarray | array | value ]* ) 
+## MDArray.prototype[ operation ] ( [ value ]* )
 
-## applyOperation( f, [ mdarray | array | value ]* ) 
+_**operation**_
+
+Operation is one of:
+
+| add | sub | mul | div |
+| mod | and | or | eq |
+| ne | neq | lt | lte |
+| gt | gte | bitand | bitor |
+| bitxor | abs | acos | acosh |
+| asin | asinh | atan | atan2 |
+| atanh | cbrt | ceil | clz32 |
+| cos | cosh | exp | expm1 |
+| floor | fround | hypot | imul |
+| log | log10 | log1p | log2 |
+| max | min | pow | random |
+| round | sign | sin | sinh |
+| sqrt | tan | tanh | trunc |
+
+_**value**_
+value is an `MDArray`, `Array`, or value.
+
+if value is an MDArray of same dimensionality of the calling MDArray,
+then operation is applied to the element
+
+if value is an MDArray of smaller dimensionality, the higher
+dimensionalities are ignored, resulting in repeated use of each element
+
+if value is an MDArray of greater dimensionality, the sub-MDArray is passed to the operator
+
+if value is an Array, it is treated identially to an `MDArray.dimension=1`,  resulting in repeated use of each element along the final dimensio.
+
+otherwise value is used in the per-element operation directly.
+
+
+
+## MDArray.prototype.applyOperation( f, [ mdarray | array | value ]* ) 
+
+
 
 # Element-By-Element Reflexive Operators
 
-## setToAdd( [ mdarray | array | value ]* )
-## setToSub( [ mdarray | array | value ]* )
-## setToMul( [ mdarray | array | value ]* )
-## setToDiv( [ mdarray | array | value ]* )
-## setToMod( [ mdarray | array | value ]* )
-## setToAnd( [ mdarray | array | value ]* )
-## setToOr( [ mdarray | array | value ]* ) 
-## setToEq( [ mdarray | array | value ]* ) 
-## setToNe( [ mdarray | array | value ]* ) 
-## setToNeq( [ mdarray | array | value ]* ) 
-## setToLt( [ mdarray | array | value ]* ) 
-## setToLte( [ mdarray | array | value ]* ) 
-## setToGt( [ mdarray | array | value ]* ) 
-## setToGte( [ mdarray | array | value ]* ) 
-## setToBitand( [ mdarray | array | value ]* )
-## setToBitor( [ mdarray | array | value ]* ) 
-## setToBitxor( [ mdarray | array | value ]* ) 
+## MDArray.prototype[ reflexive-operation ] ( [ value ]* )
 
-## applyReflexiveOperation( f, [ mdarray | array | value ]* ) 
+_**reflexive-operation**_
+
+reflexive-operation is one of 
+
+| setToAdd | setToSub | setToMul | setToDiv |
+| setToMod | setToAnd | setToOr | setToEq |
+| setToNe | setToNeq | setToLt | setToLte |
+| setToGt | setToGte | setToBitand | setToBitor |
+| setToBitxor | setToAbs | setToAcos | setToAcosh |
+| setToAsin | setToAsinh | setToAtan | setToAtan2 |
+| setToAtanh | setToCbrt | setToCeil | setToClz32 |
+| setToCos | setToCosh | setToExp | setToExpm1 |
+| setToFloor | setToFround | setToHypot | setToImul |
+| setToLog | setToLog10 | setToLog1p | setToLog2 |
+| setToMax | setToMin | setToPow | setToRandom |
+| setToRound | setToSign | setToSin | setToSinh |
+| setToSqrt | setToTan | setToTanh | setToTrunc |
+
+_**value**_
+value is an `MDArray`, `Array`, or value.
+
+if value is an MDArray of same dimensionality of the calling MDArray,
+then operation is applied to the element
+
+if value is an MDArray of smaller dimensionality, the higher
+dimensionalities are ignored, resulting in repeated use of each element
+
+if value is an MDArray of greater dimensionality, the sub-MDArray is passed to the operator
+
+if value is an Array, it is treated identially to an `MDArray.dimension=1`,  resulting in repeated use of each element along the final dimensio.
+
+otherwise value is used in the per-element operation directly.
+
+
+## MDArray.prototype.applyReflexiveOperation( f, [ mdarray | array | value ]* ) 
+
 
 
 # Not yet implemented
@@ -225,9 +267,60 @@ returns the index of the first value of the MDArary for which `f()` applied to t
 ## MDArray.prototype.splice( ... )
 
 
-
+-----------------------------
 # Static class methods	
 	
+# Element-By-Element Operators
+
+## MDArray[ operation ] ( [ value ]* )
+
+_**operation**_
+
+Operation is one of:
+
+| add | sub | mul | div |
+| mod | and | or | eq |
+| ne | neq | lt | lte |
+| gt | gte | bitand | bitor |
+| bitxor | abs | acos | acosh |
+| asin | asinh | atan | atan2 |
+| atanh | cbrt | ceil | clz32 |
+| cos | cosh | exp | expm1 |
+| floor | fround | hypot | imul |
+| log | log10 | log1p | log2 |
+| max | min | pow | random |
+| round | sign | sin | sinh |
+| sqrt | tan | tanh | trunc |
+
+
+_**value**_
+value is an `MDArray`, `Array`, or value.
+
+if value is an MDArray of same dimensionality of the calling MDArray,
+then operation is applied to the element
+
+if value is an MDArray of smaller dimensionality, the higher
+dimensionalities are ignored, resulting in repeated use of each element
+
+if value is an Array, it is treated identially to an `MDArray.dimension=1`,  resulting in repeated use of each element along the final dimensio.
+
+otherwise value is used in the per-element operation directly.
+
+_**returns**_
+Returns an MDArray containing the element-by-element result of the operation. 
+For each of the above operations, the size of the result is determined by the MDArray argument with the highest dimension.
+
+e.g.
+
+```javascript
+	const mTwos = new MDArray(1,2,3).fill(2);
+	const mSevens = MDArray.sub(9, mTwos);
+```
+
+
+
+## MDArray.applyOperation( f, [ mdarray | array | value ]* ) 
+
 ## MDArray.loop( <number|pair|triplet>[, <pair|number>*] )
 
 each argument is treated as a range over which a multidimensional iteration is done.
