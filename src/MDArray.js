@@ -1,3 +1,4 @@
+	
 // ---------------------------------------------------------------------------
 // ---------------------------------------------------------------------------
 function fbIsString( x ){
@@ -300,11 +301,6 @@ class MDArray extends Array{
 		return xOut;
 	}
 
-	// -----------------------------------------------------------
-	// -----------------------------------------------------------
-	dot (v){
-		return MDArray.mul(this,v).reduce((r1,r2)=>r1+r2);
-	}
 	
 	// -----------------------------------------------------------
 	// -----------------------------------------------------------
@@ -405,25 +401,6 @@ class MDArray extends Array{
 			
 			let x = xTarget[ xIndex ];
 
-			// attached operators on the fly
-			if ( !x && typeof( xIndex ) == 'string' ){
-				// operators
-				if ( xIndex in MDArray.#afOperations ){
-					x = xTarget.applyOperation.bind(
-						xTarget, MDArray.#afOperations[ xIndex ]
-					);
-				}
-				// reflexive operators
-				else if ( xIndex.substr( 0, 5 ) == 'setTo' ){
-					const sOp = xIndex[ 5 ].toLowerCase() + xIndex.substr( 6 );
-					if ( sOp in MDArray.#afOperations ){
-						x = xTarget.applyReflexiveOperation.bind(
-							xTarget, MDArray.#afOperations[ sOp ]
-						);
-					}
-				}
-			}
-			
 			// functions
 			if (x instanceof Function){
 				return function MDArrayProxify (...vx) {
@@ -483,64 +460,6 @@ class MDArray extends Array{
 
 
 
-	// -----------------------------------------------------------
-	// Operations
-	// -----------------------------------------------------------
-	static #afOperations = {
-		"add" : ( ...vx ) => vx.reduce((x1, x2)=>x1 + x2),
-		"sub" : ( ...vx ) => vx.reduce((x1, x2)=>x1 - x2),
-		"mul" : ( ...vx ) => vx.reduce((x1, x2)=>x1 * x2),
-		"div" : ( ...vx ) => vx.reduce((x1, x2)=>x1 / x2),
-		"mod" : ( ...vx ) => vx.reduce((x1, x2)=>x1 % x2),
-		"and" : ( ...vx ) => vx.reduce((x1, x2)=>x1 && x2),
-		"or" : ( ...vx ) => vx.reduce((x1, x2)=>x1 || x2),
-		"eq" : ( ...vx ) => vx.reduce((x1, x2)=>x1 == x2),
-		"ne" : ( ...vx ) => vx.reduce((x1, x2)=>x1 != x2),
-		"neq" : ( ...vx ) => vx.reduce((x1, x2)=>x1 != x2),
-		"lt" : ( ...vx ) => vx.reduce((x1, x2)=>x1 < x2),
-		"lte" : ( ...vx ) => vx.reduce((x1, x2)=>x1 <= x2),
-		"gt" : ( ...vx ) => vx.reduce((x1, x2)=>x1 > x2),
-		"gte" : ( ...vx ) => vx.reduce((x1, x2)=>x1 >= x2),
-		"bitand" : ( ...vx ) => vx.reduce((x1, x2)=>x1 & x2),
-		"bitor" : ( ...vx ) => vx.reduce((x1, x2)=>x1 | x2),
-		"bitxor" : ( ...vx ) => vx.reduce((x1, x2)=>x1 ^ x2),
-		"abs" : Math.abs,
-		"acos" : Math.acos,
-		"acosh" : Math.acosh,
-		"asin" : Math.asin,
-		"asinh" : Math.asinh,
-		"atan" : Math.atan,
-		"atan2" : Math.atan2,
-		"atanh" : Math.atanh,
-		"cbrt" : Math.cbrt,
-		"ceil" : Math.ceil,
-		"clz32" : Math.clz32,
-		"cos" : Math.cos,
-		"cosh" : Math.cosh,
-		"exp" : Math.exp,
-		"expm1" : Math.expm1,
-		"floor" : Math.floor,
-		"fround" : Math.fround,
-		"hypot" : Math.hypot,
-		"imul" : Math.imul,
-		"log" : Math.log,
-		"log10" : Math.log10,
-		"log1p" : Math.log1p,
-		"log2" : Math.log2,
-		"max" : Math.max,
-		"min" : Math.min,
-		"pow" : Math.pow,
-		"random" : Math.random,
-		"round" : Math.round,
-		"sign" : Math.sign,
-		"sin" : Math.sin,
-		"sinh" : Math.sinh,
-		"sqrt" : Math.sqrt,
-		"tan" : Math.tan,
-		"tanh" : Math.tanh,
-		"trunc" : Math.trunc,
-	}
-	
 
 	// -----------------------------------------------------------
 	// -----------------------------------------------------------
@@ -638,21 +557,116 @@ class MDArray extends Array{
 		);
 	}
 
-	// -----------------------------------------------------------
-	// -----------------------------------------------------------
-	static #_initialize = (()=>{
-		for ( const sOp in MDArray.#afOperations ){
-			MDArray[ sOp ] = MDArray.applyOperation.bind(
-				null, MDArray.#afOperations[ sOp ]
-			);
-			MDArray.easy[ sOp ] = MDArray.applyOperation.bind(
-				null, MDArray.#afOperations[ sOp ]
-			);
-		}
-	})();
-
-	
 };
+	
+// -----------------------------------------------------------
+// Operations
+// -----------------------------------------------------------
+const afOperations = {
+	"add" : ( ...vx ) => vx.reduce((x1, x2)=>x1 + x2),
+	"sub" : ( ...vx ) => vx.reduce((x1, x2)=>x1 - x2),
+	"mul" : ( ...vx ) => vx.reduce((x1, x2)=>x1 * x2),
+	"div" : ( ...vx ) => vx.reduce((x1, x2)=>x1 / x2),
+	"mod" : ( ...vx ) => vx.reduce((x1, x2)=>x1 % x2),
+	"and" : ( ...vx ) => vx.reduce((x1, x2)=>x1 && x2),
+	"or" : ( ...vx ) => vx.reduce((x1, x2)=>x1 || x2),
+	"eq" : ( ...vx ) => vx.reduce((x1, x2)=>x1 == x2),
+	"ne" : ( ...vx ) => vx.reduce((x1, x2)=>x1 != x2),
+	"neq" : ( ...vx ) => vx.reduce((x1, x2)=>x1 != x2),
+	"lt" : ( ...vx ) => vx.reduce((x1, x2)=>x1 < x2),
+	"lte" : ( ...vx ) => vx.reduce((x1, x2)=>x1 <= x2),
+	"gt" : ( ...vx ) => vx.reduce((x1, x2)=>x1 > x2),
+	"gte" : ( ...vx ) => vx.reduce((x1, x2)=>x1 >= x2),
+	"bitand" : ( ...vx ) => vx.reduce((x1, x2)=>x1 & x2),
+	"bitor" : ( ...vx ) => vx.reduce((x1, x2)=>x1 | x2),
+	"bitxor" : ( ...vx ) => vx.reduce((x1, x2)=>x1 ^ x2),
+	"abs" : Math.abs,
+	"acos" : Math.acos,
+	"acosh" : Math.acosh,
+	"asin" : Math.asin,
+	"asinh" : Math.asinh,
+	"atan" : Math.atan,
+	"atan2" : Math.atan2,
+	"atanh" : Math.atanh,
+	"cbrt" : Math.cbrt,
+	"ceil" : Math.ceil,
+	"clz32" : Math.clz32,
+	"cos" : Math.cos,
+	"cosh" : Math.cosh,
+	"exp" : Math.exp,
+	"expm1" : Math.expm1,
+	"floor" : Math.floor,
+	"fround" : Math.fround,
+	"hypot" : Math.hypot,
+	"imul" : Math.imul,
+	"log" : Math.log,
+	"log10" : Math.log10,
+	"log1p" : Math.log1p,
+	"log2" : Math.log2,
+	"max" : Math.max,
+	"min" : Math.min,
+	"pow" : Math.pow,
+	"random" : Math.random,
+	"round" : Math.round,
+	"sign" : Math.sign,
+	"sin" : Math.sin,
+	"sinh" : Math.sinh,
+	"sqrt" : Math.sqrt,
+	"tan" : Math.tan,
+	"tanh" : Math.tanh,
+	"trunc" : Math.trunc,
+};
+
+const afReductions = {
+	"maxElt" : ( ...vx ) => MDArray.max(...vx).reduce(Math.max),
+	"minElt" : ( ...vx ) => MDArray.min(...vx).reduce(Math.min),
+	"sumUp" : ( m ) => m.reduce((x1, x2)=>x1+x2),
+	"dot" : ( m1, m2 ) => MDArray.sumUp(MDArray.mul(m1, m2)),
+	"dist" : ( m1, m2 ) => Math.sqrt(
+		MDArray.sumUp(MDArray.pow(MDArray.sub(m1, m2), 2))
+	),
+	"norm" : ( m ) => Math.sqrt( MDArray.sumUp( MDArray.pow( m, 2 )) ),
+	"cityDist" : ( m1, m2 ) => MDArray.sumUp(MDArray.abs(MDArray.sub(m1, m2))),
+}
+
+// attach operations to the objects
+for ( const sOp in afOperations ){
+	const fOp = afOperations[ sOp ];
+
+	// static class method
+	MDArray[ sOp ] = MDArray.applyOperation.bind(	null, fOp	);
+
+	// static class method on proxy object
+	MDArray.easy[ sOp ] = MDArray.applyOperation.bind( null, fOp );
+
+	// operator on prototype
+	MDArray.prototype[ sOp ] = function ( ...vx ) {
+		return this.applyOperation( fOp, ...vx	);
+	};
+
+	// reflexive operator on prototype
+	const sReflexive = 'setTo' + sOp[0].toUpperCase() + sOp.substr(1);
+	MDArray.prototype[ sReflexive ] = function ( ...vx ) {
+		return this.applyReflexiveOperation( fOp, ...vx );
+	};
+}
+
+// attach reductions to the objects
+for ( const sf in afReductions ){
+	const f = afReductions[ sf ];
+	
+	// static class method
+	MDArray[ sf ] = f;
+
+	// static class method on proxy
+	MDArray.easy[ sf ] = f;
+
+	// method on prototype
+	MDArray.prototype[ sf ] = function ( ...vx ) {
+		return f.call( null, this, ...vx );
+	}
+}
+	
 	
 // ---------------------------------------------------------------------------
 // ---------------------------------------------------------------------------

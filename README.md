@@ -279,6 +279,23 @@ _**value**_
 ## MDArray.prototype.applyReflexiveOperation( f, [ mdarray | array | value ]* ) 
 
 
+# Reductive Operators
+
+## MDArray.prototype[ reductive-operation ] ( [ value ]* )
+
+| . | . | . |
+|---|---|---|
+|maxElt|minElt|sumUp| 
+|dot| dist|norm|
+|cityDist|
+
+
+_**value**_
+> See above
+
+_**return**_
+> A number
+
 
 # Not yet implemented
 
@@ -335,6 +352,16 @@ e.g.
 ```
 
 ### MDArray.applyOperation( f, [ mdarray | array | value ]* ) 
+
+
+## MDArray[ reductive-operation ] ( [ value ]* )
+
+_**value**_
+> See above
+
+_**return**_
+> A number
+
 
 
 # Looping
