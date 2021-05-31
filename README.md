@@ -47,19 +47,21 @@ Looping is also vastly simplified:
 	}
 ```
 
-> Result:
->		MDArray(2) [
->			MDArray(3) [
->				MDArray(4) [ '000', '001', '002', '003' ],
->				MDArray(4) [ '010', '011', '012', '013' ],
->				MDArray(4) [ '020', '021', '022', '023' ]
->			],
->			MDArray(3) [
->				MDArray(4) [ '100', '101', '102', '103' ],
->				MDArray(4) [ '110', '111', '112', '113' ],
->				MDArray(4) [ '120', '121', '122', '123' ]
->			]
->		]
+> Result:  
+> ```
+> 	MDArray(2) [  
+> 		MDArray(3) [  
+> 			MDArray(4) [ '000', '001', '002', '003' ],  
+> 			MDArray(4) [ '010', '011', '012', '013' ],  
+> 			MDArray(4) [ '020', '021', '022', '023' ]  
+> 		],  
+>  		MDArray(3) [  
+> 			MDArray(4) [ '100', '101', '102', '103' ],  
+> 			MDArray(4) [ '110', '111', '112', '113' ],  
+> 			MDArray(4) [ '120', '121', '122', '123' ]  
+> 		]  
+> 	]  
+> ```
 
 ## sub-arrays
 
@@ -68,15 +70,15 @@ Looping is also vastly simplified:
 	myMDArray[1].fill(1);
 ```
 
-> yields:
->	
->		[ [ [ 0, 0, 0, 0 ],
->				[ 0, 0, 0, 0 ],
->				[ 0, 0, 0, 0 ] ], 
->			[ [ 1, 1, 1, 1 ], 
->				[ 1, 1, 1, 1 ], 
->				[ 1, 1, 1, 1 ] ] ] 
-
+> yields:   
+> ```
+> 	[ [ [ 0, 0, 0, 0 ],  
+> 	    [ 0, 0, 0, 0 ],  
+> 	    [ 0, 0, 0, 0 ] ],   
+> 	  [ [ 1, 1, 1, 1 ],   
+> 	    [ 1, 1, 1, 1 ],   
+> 	    [ 1, 1, 1, 1 ] ] ]   
+> ```
 
 ## suite
 
@@ -122,13 +124,14 @@ converts the array into an MDArray
 
 ## MDArray.prototype.get( index )
 
-if the index is an array of length equal to the dimensionality of the MDArray, returns the value at the specified index where 
-
-if the index is less than the dimensionality of the MDArray, returns the sub MDArray 
-
-if the index is greater than than the dimensionality of the MDArray, undefined is returned.
-
-if the index is outsize of the size of the MDArray then undefined is returned.
+_**index**_
+> if the index is an array of length equal to the dimensionality of the MDArray, returns the value at the specified index where 
+> 
+> if the index is less than the dimensionality of the MDArray, returns the sub MDArray 
+> 
+> if the index is greater than than the dimensionality of the MDArray, undefined is returned.
+> 
+> if the index is outsize of the size of the MDArray then undefined is returned.
 
 ## MDArray.prototype.set( index, x )
 
@@ -176,7 +179,9 @@ returns the index of the first value of the MDArary for which `f()` applied to t
 _**operation**_
 
 Operation is one of:
-
+	
+| - | - | - | - |
+| --- | --- | --- | --- |
 | add | sub | mul | div |
 | mod | and | or | eq |
 | ne | neq | lt | lte |
@@ -192,20 +197,17 @@ Operation is one of:
 | sqrt | tan | tanh | trunc |
 
 _**value**_
-value is an `MDArray`, `Array`, or value.
-
-if value is an MDArray of same dimensionality of the calling MDArray,
-then operation is applied to the element
-
-if value is an MDArray of smaller dimensionality, the higher
-dimensionalities are ignored, resulting in repeated use of each element
-
-if value is an MDArray of greater dimensionality, the sub-MDArray is passed to the operator
-
-if value is an Array, it is treated identially to an `MDArray.dimension=1`,  resulting in repeated use of each element along the final dimensio.
-
-otherwise value is used in the per-element operation directly.
-
+> value is an `MDArray`, `Array`, or value.
+>
+> if value is an MDArray of same dimensionality of the calling MDArray, then operation is applied to the element
+>
+> if value is an MDArray of smaller dimensionality, the higher dimensionalities are ignored, resulting in repeated use of each element
+> 
+> if value is an MDArray of greater dimensionality, the sub-MDArray is passed to the operator
+> 
+> if value is an Array, it is treated identially to an `MDArray.dimension=1`,  resulting in repeated use of each element along the final dimension.
+>
+> otherwise value is used in the per-element operation directly.
 
 
 ## MDArray.prototype.applyOperation( f, [ mdarray | array | value ]* ) 
@@ -220,6 +222,8 @@ _**reflexive-operation**_
 
 reflexive-operation is one of 
 
+| - | - | - | - |
+| --- | --- | --- | --- |
 | setToAdd | setToSub | setToMul | setToDiv |
 | setToMod | setToAnd | setToOr | setToEq |
 | setToNe | setToNeq | setToLt | setToLte |
@@ -235,19 +239,17 @@ reflexive-operation is one of
 | setToSqrt | setToTan | setToTanh | setToTrunc |
 
 _**value**_
-value is an `MDArray`, `Array`, or value.
-
-if value is an MDArray of same dimensionality of the calling MDArray,
-then operation is applied to the element
-
-if value is an MDArray of smaller dimensionality, the higher
-dimensionalities are ignored, resulting in repeated use of each element
-
-if value is an MDArray of greater dimensionality, the sub-MDArray is passed to the operator
-
-if value is an Array, it is treated identially to an `MDArray.dimension=1`,  resulting in repeated use of each element along the final dimensio.
-
-otherwise value is used in the per-element operation directly.
+> value is an `MDArray`, `Array`, or value.
+>
+> if value is an MDArray of same dimensionality of the calling MDArray, then operation is applied to the element
+>
+> if value is an MDArray of smaller dimensionality, the higher dimensionalities are ignored, resulting in repeated use of each element
+> 
+> if value is an MDArray of greater dimensionality, the sub-MDArray is passed to the operator
+>
+> if value is an Array, it is treated identially to an `MDArray.dimension=1`,  resulting in repeated use of each element along the final dimension.
+>
+> otherwise value is used in the per-element operation directly.
 
 
 ## MDArray.prototype.applyReflexiveOperation( f, [ mdarray | array | value ]* ) 
@@ -270,6 +272,8 @@ _**operation**_
 
 Operation is one of:
 
+| - | - | - | - |
+| --- | --- | --- | --- |
 | add | sub | mul | div |
 | mod | and | or | eq |
 | ne | neq | lt | lte |
@@ -286,21 +290,18 @@ Operation is one of:
 
 
 _**value**_
-value is an `MDArray`, `Array`, or value.
-
-if value is an MDArray of same dimensionality of the calling MDArray,
-then operation is applied to the element
-
-if value is an MDArray of smaller dimensionality, the higher
-dimensionalities are ignored, resulting in repeated use of each element
-
-if value is an Array, it is treated identially to an `MDArray.dimension=1`,  resulting in repeated use of each element along the final dimensio.
-
-otherwise value is used in the per-element operation directly.
+> value is an `MDArray`, `Array`, or value.
+>
+> if value is an MDArray of same dimensionality of the calling MDArray, then operation is applied to the element
+>
+> if value is an MDArray of smaller dimensionality, the higher dimensionalities are ignored, resulting in repeated use of each element
+>
+> if value is an Array, it is treated identially to an `MDArray.dimension=1`,  resulting in repeated use of each element along the final dimension.
+> otherwise value is used in the per-element operation directly.
 
 _**returns**_
-Returns an MDArray containing the element-by-element result of the operation. 
-For each of the above operations, the size of the result is determined by the MDArray argument with the highest dimension.
+> Returns an MDArray containing the element-by-element result of the operation. 
+> For each of the above operations, the size of the result is determined by the MDArray argument with the highest dimension.
 
 e.g.
 
@@ -313,12 +314,15 @@ e.g.
 
 ## MDArray.applyOperation( f, [ mdarray | array | value ]* ) 
 
-## MDArray.loop( <number|pair|triplet>[, <pair|number>*] )
-
+## MDArray.loop( range[, range]* )
+	
 each argument is treated as a range over which a multidimensional iteration is done.
-In the case of a <number> the range is assumed to be 0 to <number> with step of 1.
-In the case of a <pair> the range is assumed to be <pair>[0] to <pair>[1] with step of 1.
-In the case of a <triplet> the range is assumed to be <pair>[0] to <pair>[2] with step of <pair>[1];
+
+_**range**_	
+> the range can be a number, pair, or triplet.
+> In the case of a number the range is assumed to be 0 to number with step of 1.
+> In the case of a pair the range is assumed to be pair[0] to pair[1] with step of 1.
+> In the case of a triplet the range is assumed to be pair[0] to pair[2] with step of pair[1];
 
 
 
@@ -330,26 +334,27 @@ In the case of a <triplet> the range is assumed to be <pair>[0] to <pair>[2] wit
 	}
 ```
 
-> output
->			 [ 0, 1, -1 ]
->			 [ 0, 1, -3 ]
->			 [ 0, 2, -1 ]
->			 [ 0, 2, -3 ]
->			 [ 0, 3, -1 ]
->			 [ 0, 3, -3 ]
->			 [ 1, 1, -1 ]
->			 [ 1, 1, -3 ]
->			 [ 1, 2, -1 ]
->			 [ 1, 2, -3 ]
->			 [ 1, 3, -1 ]
->			 [ 1, 3, -3 ]
->			 [ 2, 1, -1 ]
->			 [ 2, 1, -3 ]
->			 [ 2, 2, -1 ]
->			 [ 2, 2, -3 ]
->			 [ 2, 3, -1 ]
->			 [ 2, 3, -3 ]
-
+> output  
+> ```
+>			 [ 0, 1, -1 ]  
+>			 [ 0, 1, -3 ]  
+>			 [ 0, 2, -1 ]  
+>			 [ 0, 2, -3 ]  
+>			 [ 0, 3, -1 ]  
+>			 [ 0, 3, -3 ]  
+>			 [ 1, 1, -1 ]  
+>			 [ 1, 1, -3 ]  
+>			 [ 1, 2, -1 ]  
+>			 [ 1, 2, -3 ]  
+>			 [ 1, 3, -1 ]  
+>			 [ 1, 3, -3 ]  
+>			 [ 2, 1, -1 ]  
+>			 [ 2, 1, -3 ]  
+>			 [ 2, 2, -1 ]  
+>			 [ 2, 2, -3 ]  
+>			 [ 2, 3, -1 ]  
+>			 [ 2, 3, -3 ]  
+> ```
 
 ## MDArray.loop( <mdarray> )
 
@@ -367,16 +372,18 @@ iterates over the neighborhood of size radius surrounding, but not including, th
 	}
 ```
 
-> output
->			 [ 2, 3 ]
->			 [ 2, 4 ]
->			 [ 2, 5 ]
->			 [ 3, 3 ]
->			 [ 3, 5 ]  <--- notice [3, 4] does not appear
->			 [ 4, 3 ]
->			 [ 4, 4 ]
->			 [ 4, 5 ]
-
+> output  
+> ```
+>			 [ 2, 3 ]  
+>			 [ 2, 4 ]  
+>			 [ 2, 5 ]  
+>			 [ 3, 3 ]  
+>			 [ 3, 5 ]  <--- notice [3, 4] does not appear  
+>			 [ 4, 3 ]  
+>			 [ 4, 4 ]  
+>			 [ 4, 5 ]  
+> ```
+	
 ## MDArray.loopUpDown( <index>[, <radius = 1>] )
 
 loops along each dimension separately, within the provided radius, e.g.:
@@ -386,14 +393,16 @@ loops along each dimension separately, within the provided radius, e.g.:
 		console.log("\t\t\t",index);
 	}
 ```
+	
 > output
->			 [ 1, 4 ] // loop 2 before in dimension 0
->			 [ 2, 4 ]
->			 [ 4, 4 ] // loop 2 after in dimension 0
->			 [ 5, 4 ]
->			 [ 3, 2 ] // loop 2 before in dimension 1
->			 [ 3, 3 ]
->			 [ 3, 5 ] // loop 2 after in dimension 1
->			 [ 3, 6 ]
-
+> ```
+>			 [ 1, 4 ] // loop 2 before in dimension 0  
+>			 [ 2, 4 ]  
+>			 [ 4, 4 ] // loop 2 after in dimension 0  
+>			 [ 5, 4 ]  
+>			 [ 3, 2 ] // loop 2 before in dimension 1  
+>			 [ 3, 3 ]  
+>			 [ 3, 5 ] // loop 2 after in dimension 1  
+>			 [ 3, 6 ]  
+> ```
 
