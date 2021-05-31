@@ -115,12 +115,14 @@ class MDArray extends Array{
 	// -----------------------------------------------------------
 	// -----------------------------------------------------------
 	get size() {
-		if ( this.dimensions <= 1 ){
-			return [ this.length ];
+		const c = this.dimensions;
+		const size = new MDArray( c );
+		let m = this;
+		for ( let n = 0; n<c; n++ ){
+			size[ n ] = m.length;
+			m = m[ 0 ];
 		}
-		else{
-			return [ this.length, ...this[ 0 ].size ];
-		}
+		return size;
 	}	
 
 	// -----------------------------------------------------------
@@ -282,6 +284,7 @@ class MDArray extends Array{
 	// -----------------------------------------------------------
 	map( f ){
 		const mNew = new MDArray( ...this.size);
+		
 		for ( const nm of this.loop() ){
 			mNew.set( nm, f( this.get( nm ), nm, this ));
 		}
@@ -297,6 +300,12 @@ class MDArray extends Array{
 		return xOut;
 	}
 
+	// -----------------------------------------------------------
+	// -----------------------------------------------------------
+	dot (v){
+		return MDArray.mul(this,v).reduce((r1,r2)=>r1+r2);
+	}
+	
 	// -----------------------------------------------------------
 	// -----------------------------------------------------------
 	slice( vnStart, vnEnd ){
@@ -372,7 +381,9 @@ class MDArray extends Array{
 			if (typeof(xIndex) != 'symbol'){
 				
 				// lists of numbers
-				const vx = xIndex.split( ',' );
+				const vx = xIndex[0]=='['
+							? xIndex.substr(1,xIndex.length-2).split(',')
+							: xIndex.split( ',' );
 				if ( vx.length > 1 ){
 					const vn = vx.map( ( x ) => parseInt( x ) );
 					return xTarget.get( vn );
@@ -425,6 +436,12 @@ class MDArray extends Array{
 					return xResult;
 				}
 			}
+			
+			// getters that return an MDArray, except for raw!
+			if ( MDArray.isMDArray( x ) && xIndex != 'raw' ){
+				Object.defineProperty( x, 'raw', { value : x });
+				return new Proxy( x, MDArray.handler );
+			}
 
 			// anything else
 			return x;
@@ -437,7 +454,9 @@ class MDArray extends Array{
 			// handle symbols below
 			if (typeof(xIndex) != 'symbol'){
 				// lists of numbers
-				const vx = xIndex.split( ',' );
+				const vx = xIndex[0]=='['
+							? xIndex.substr(1,xIndex.length-2).split(',')
+							: xIndex.split( ',' );
 				if ( vx.length > 1 ){
 					const vn = vx.map( ( x ) => parseInt( x ) );
 					xTarget.set( vn, xVal );
@@ -641,7 +660,11 @@ MDArray.loop = MDArray.easy.loop = function* loop( ...vx ){
 	
 	let vtRange = [];
 	if ( MDArray.isMDArray( vx[ 0 ])){
-		vtRange = vx[ 0 ].size.map(( c ) => [ 0, 1, c ]);
+		const size = vx[ 0 ].size;
+		const c = size.length;
+		for ( let n = 0; n < c; n ++ ){
+			vtRange.push( [ 0, 1, size[ n ]]);
+		}
 	}
 	else{
 		const c = vx.length;
@@ -671,14 +694,14 @@ MDArray.loop = MDArray.easy.loop = function* loop( ...vx ){
 			if (tRange[ 0 ] < tRange[ 2 ]){
 				for ( let n = tRange[ 0 ]; n < tRange[ 2 ]; n += tRange[ 1 ] ){
 					for ( const xSub of loopInner( vtRange.slice( 1 ))){
-						yield [ n, ...xSub ];
+						yield new MDArray([ n, ...xSub ]);
 					}
 				}
 			}
 			else{
 				for ( let n = tRange[ 0 ]; n > tRange[ 2 ]; n += tRange[ 1 ] ){
 					for ( const xSub of loopInner( vtRange.slice( 1 ))){
-						yield [ n, ...xSub ];
+						yield new MDArray([ n, ...xSub ]);
 					}
 				}
 			}
@@ -686,12 +709,12 @@ MDArray.loop = MDArray.easy.loop = function* loop( ...vx ){
 		else{
 			if (tRange[ 0 ] < tRange[ 2 ]){
 				for ( let n = tRange[ 0 ]; n < tRange[ 2 ]; n += tRange[ 1 ] ){
-					yield [ n ];
+					yield new MDArray([ n ]);
 				}
 			}
 			else{
 				for ( let n = tRange[ 0 ]; n > tRange[ 2 ]; n += tRange[ 1 ] ){
-					yield [ n ];
+					yield new MDArray([ n ]);
 				}
 			}
 		}

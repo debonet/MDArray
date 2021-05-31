@@ -20,9 +20,10 @@ const MDArray = require ( "../src/MDArray.js" );
   'size',
 ]
 
+const Util = require('util');
 test("MDArray.size", () => {
 	const m = new MDArray( 2, 3, 4, 5, 6 );
-	expect(m.size).toStrictEqual([ 2, 3, 4, 5, 6 ]);
+	expect(m.size).toEqual(new MDArray([ 2, 3, 4, 5, 6 ]));
 });
 
 test("MDArray.length()", () => {
@@ -59,7 +60,7 @@ test("MDArray.findIndex()", () => {
 	m[[1,1,3,4,5]] = "needle";
 
 	const index = m.findIndex((s)=>s==="needle");
-	expect( index ).toStrictEqual([ 1, 1, 3, 4, 5 ]);
+	expect( index ).toEqual(new MDArray([ 1, 1, 3, 4, 5 ]));
 });
 
 test("MDArray.get()", () => {
@@ -98,9 +99,9 @@ test("MDArray.indexOf()", () => {
 	const m = new MDArray(2,3,4,5,6).fill("haystack");
 	m[[1,2,3,4,5]] = "needle";
 	
-	expect( m.indexOf("needle")).toStrictEqual([1,2,3,4,5]);
-	expect( m.indexOf("haystack" )).toStrictEqual([0,0,0,0,0]);
-	expect( m.indexOf("cobra" )).toStrictEqual(new Array(5).fill(-1));
+	expect( m.indexOf("needle")).toEqual([1,2,3,4,5]);
+	expect( m.indexOf("haystack" )).toEqual([0,0,0,0,0]);
+	expect( m.indexOf("cobra" )).toEqual(new Array(5).fill(-1));
 });
 
 test("MDArray.makeCopy()", () => {
