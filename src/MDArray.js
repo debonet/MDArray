@@ -107,22 +107,11 @@ class MDArray extends Array{
 	// -----------------------------------------------------------
 	// -----------------------------------------------------------
 	* [ Symbol.iterator ](){
-		if ( this.dimensions <= 1 ){
-			const c = this.length;
-			for ( let n = 0; n < c; n ++ ){
-				yield [ n ];
-			}
+		for ( const nm of this.loop()){
+			yield this.get( nm );
 		}
-		else{
-			const c = this.length;
-			for ( let n = 0; n < c; n ++ ){
-				for ( let m of this[ n ]){
-					m.unshift( n );
-					yield m;
-				}
-			}
-		}
-	}	
+	}
+	
 	// -----------------------------------------------------------
 	// -----------------------------------------------------------
 	get size() {
@@ -151,7 +140,7 @@ class MDArray extends Array{
 	// -----------------------------------------------------------
 	forEach( f ){
 		const m = this;
-		for ( const nm of this ){
+		for ( const nm of this.loop() ){
 			f( m.get( nm ), nm, m );
 		}
 		return this;
@@ -159,7 +148,7 @@ class MDArray extends Array{
 	// -----------------------------------------------------------
 	// -----------------------------------------------------------
 	fill( x ){
-		for ( let nm of this ){
+		for ( let nm of this.loop() ){
 			this.set( nm, x );
 		}
 		return this;
@@ -167,7 +156,7 @@ class MDArray extends Array{
 	// -----------------------------------------------------------
 	// -----------------------------------------------------------
 	find( fb ){
-		for ( let nm of this ){
+		for ( let nm of this.loop() ){
 			const x = this.get( nm );
 			if ( fb( x )){
 				return x;
@@ -177,7 +166,7 @@ class MDArray extends Array{
 	// -----------------------------------------------------------
 	// -----------------------------------------------------------
 	every( fb ){
-		for ( let nm of this ){
+		for ( let nm of this.loop() ){
 			const x = this.get( nm );
 			if ( ! fb( x )){
 				return false;
@@ -188,7 +177,7 @@ class MDArray extends Array{
 	// -----------------------------------------------------------
 	// -----------------------------------------------------------
 	includes( x ){
-		for ( let nm of this ){
+		for ( let nm of this.loop() ){
 			if ( this.get( nm ) == x ){
 				return true;
 			}
@@ -198,7 +187,7 @@ class MDArray extends Array{
 	// -----------------------------------------------------------
 	// -----------------------------------------------------------
 	indexOf( xTest ){
-		for ( let nm of this ){
+		for ( let nm of this.loop() ){
 			const x = this.get( nm );
 			if ( x == xTest ){
 				return nm;
@@ -209,7 +198,7 @@ class MDArray extends Array{
 	// -----------------------------------------------------------
 	// -----------------------------------------------------------
 	findIndex( fb ){
-		for ( const nm of this ){
+		for ( const nm of this.loop() ){
 			const x = this.get( nm );
 			if ( fb( x )){
 				return nm;
@@ -222,7 +211,7 @@ class MDArray extends Array{
 	// -----------------------------------------------------------
 	makeCopy(){
 		const m = new MDArray( ...this.size);
-		for ( let nm of this ){
+		for ( let nm of this.loop() ){
 			m.set( nm, this.get( nm ));
 		}
 		return m;
@@ -293,7 +282,7 @@ class MDArray extends Array{
 	// -----------------------------------------------------------
 	map( f ){
 		const mNew = new MDArray( ...this.size);
-		for ( const nm of this ){
+		for ( const nm of this.loop() ){
 			mNew.set( nm, f( this.get( nm ), nm, this ));
 		}
 		return mNew;
@@ -302,7 +291,7 @@ class MDArray extends Array{
 	// -----------------------------------------------------------
 	// -----------------------------------------------------------
 	reduce( f, xOut = 0 ){
-		for ( const nm of this ){
+		for ( const nm of this.loop() ){
 			xOut = f( xOut, this.get( nm ));
 		}
 		return xOut;
@@ -348,8 +337,18 @@ class MDArray extends Array{
 
 	// -----------------------------------------------------------
 	// -----------------------------------------------------------
-	* loop (){
-		yield* MDArray.loop(this);
+	*loop(){
+		yield* MDArray.loop( this );
+	}
+
+	// -----------------------------------------------------------
+	// -----------------------------------------------------------
+	keys(){
+		const vOut = [];
+		for ( const nm of this.loop()){
+			vOut.push( nm );
+		}
+		return vOut;
 	}
 
 	
@@ -561,8 +560,9 @@ class MDArray extends Array{
 	static applyOperation( fOp, ...vx ){
 		let m = undefined;
 		let cDimMax = -1;
+		const c = vx.length;
 		
-		for ( const n in vx ){
+		for ( let n = 0 ; n < c; n++ ){
 			if (
 				MDArray.isMDArray( vx[ n ])
 					&& cDimMax < vx[ n ].dimensions
@@ -635,24 +635,17 @@ class MDArray extends Array{
 	
 };
 	
-
-// ---------------------------------------------------------------------------
-// ---------------------------------------------------------------------------
-MDArray.Range = MDArray.easy.Range = class extends Array {
-}
-
 // ---------------------------------------------------------------------------
 // ---------------------------------------------------------------------------
 MDArray.loop = MDArray.easy.loop = function* loop( ...vx ){
-	let vtRange;
-		
-	if (! (vx[0] instanceof MDArray.Range)){
-		if ( MDArray.isMDArray( vx[ 0 ])){
-			vx = vx[ 0 ].size;
-		}
-
-		vtRange = new MDArray.Range();
-		for (const n in vx){
+	
+	let vtRange = [];
+	if ( MDArray.isMDArray( vx[ 0 ])){
+		vtRange = vx[ 0 ].size.map(( c ) => [ 0, 1, c ]);
+	}
+	else{
+		const c = vx.length;
+		for ( let n = 0 ; n < c; n++ ){
 			if ( ! Array.isArray( vx[ n ])){
 				vtRange[ n ] = [ 0, 1, vx[ n ]];
 			}
@@ -667,39 +660,43 @@ MDArray.loop = MDArray.easy.loop = function* loop( ...vx ){
 			}
 		}
 	}
-	else{
-		vtRange = vx[ 0 ];
-	}
-
-	// these put the if's on the outside for efficiency
-	if ( vtRange.length > 1 ){
-		if (vtRange[ 0 ][ 0 ] < vtRange[ 0 ][ 2 ]){
-			for ( let n = vtRange[ 0 ][ 0 ]; n < vtRange[ 0 ][ 2 ]; n += vtRange[ 0 ][ 1 ] ){
-				for ( const xSub of MDArray.loop( vtRange.slice( 1 ))){
-					yield [ n, ...xSub ];
+	
+	yield* loopInner( vtRange );
+	
+	function* loopInner( vtRange ){
+		const tRange = vtRange[ 0 ];
+		
+		// these put the if's on the outside for efficiency
+		if ( vtRange.length > 1 ){
+			if (tRange[ 0 ] < tRange[ 2 ]){
+				for ( let n = tRange[ 0 ]; n < tRange[ 2 ]; n += tRange[ 1 ] ){
+					for ( const xSub of loopInner( vtRange.slice( 1 ))){
+						yield [ n, ...xSub ];
+					}
+				}
+			}
+			else{
+				for ( let n = tRange[ 0 ]; n > tRange[ 2 ]; n += tRange[ 1 ] ){
+					for ( const xSub of loopInner( vtRange.slice( 1 ))){
+						yield [ n, ...xSub ];
+					}
 				}
 			}
 		}
 		else{
-			for ( let n = vtRange[ 0 ][ 0 ]; n > vtRange[ 0 ][ 2 ]; n += vtRange[ 0 ][ 1 ] ){
-				for ( const xSub of MDArray.loop( vtRange.slice( 1 ))){
-					yield [ n, ...xSub ];
+			if (tRange[ 0 ] < tRange[ 2 ]){
+				for ( let n = tRange[ 0 ]; n < tRange[ 2 ]; n += tRange[ 1 ] ){
+					yield [ n ];
+				}
+			}
+			else{
+				for ( let n = tRange[ 0 ]; n > tRange[ 2 ]; n += tRange[ 1 ] ){
+					yield [ n ];
 				}
 			}
 		}
 	}
-	else{
-		if (vtRange[ 0 ][ 0 ] < vtRange[ 0 ][ 2 ]){
-			for ( let n = vtRange[ 0 ][ 0 ]; n < vtRange[ 0 ][ 2 ]; n += vtRange[ 0 ][ 1 ] ){
-				yield [ n ];
-			}
-		}
-		else{
-			for ( let n = vtRange[ 0 ][ 0 ]; n > vtRange[ 0 ][ 2 ]; n += vtRange[ 0 ][ 1 ] ){
-				yield [ n ];
-			}
-		}
-	}
+	
 }
 
 

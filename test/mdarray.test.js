@@ -73,7 +73,7 @@ test("MDArray looping", () => {
 	const m = new MDArray(2,3,4);
 
 	const v=[];
-	for (const index of m ){
+	for (const index of m.loop() ){
 		v.push(index);
 	}
 	

@@ -39,10 +39,10 @@ accesing elements can be done in numerous ways:
 ```
 
 ## looping
-Looping is also vastly simplified: 
+Looping is also vastly simplified. Looping over indicies:
 
 ```javascript
-	for ( const index of myMDArray ){
+	for ( const index of myMDArray.loop()){
 		myMDArray[ index ] = index.join('');
 	}
 ```
@@ -62,6 +62,29 @@ Looping is also vastly simplified:
 > 		]  
 > 	]  
 > ```
+
+And looping over values:
+
+```javascript
+	for ( const val of myMDArray ){
+		console.log( val );
+	}
+```
+> Result:  
+> ```
+>		000
+>		001
+>		002
+>		003
+>		010
+>		011
+>        .
+>        .
+>        .
+>		122
+>		123
+> ```
+
 
 ## sub-arrays
 
@@ -114,13 +137,14 @@ Including function-oriented programming methods, e.g.:
 
 produces an empty MDArray object, with dimension 0
 
-### MDArray( <number>, [<number>]* )
+### new MDArray( <number>, [<number>]* )
 
 produces MDArray whose dimensions are set to the specified numbers
 
-### MDArray( <array> )
+### new MDArray( <array> )
 
 converts the array into an MDArray 
+
 
 ## MDArray.prototype.get( index )
 
@@ -264,9 +288,9 @@ _**value**_
 -----------------------------
 # Static class methods	
 	
-# Element-By-Element Operators
+## Element-By-Element Operators
 
-## MDArray[ operation ] ( [ value ]* )
+### MDArray[ operation ] ( [ value ]* )
 
 _**operation**_
 
@@ -310,12 +334,13 @@ e.g.
 	const mSevens = MDArray.sub(9, mTwos);
 ```
 
+### MDArray.applyOperation( f, [ mdarray | array | value ]* ) 
 
 
-## MDArray.applyOperation( f, [ mdarray | array | value ]* ) 
+# Looping
 
 ## MDArray.loop( range[, range]* )
-	
+
 each argument is treated as a range over which a multidimensional iteration is done.
 
 _**range**_	
@@ -324,9 +349,7 @@ _**range**_
 > In the case of a pair the range is assumed to be pair[0] to pair[1] with step of 1.
 > In the case of a triplet the range is assumed to be pair[0] to pair[2] with step of pair[1];
 
-
-
-(in the case of a pair step 1 is assumed) or a count (i.e. range from 0 to count) 
+Example:
 
 ```javascript
 	for ( const index of MDArray.loop( 3, [ 1, 4 ], [-1, -2, -5 ], )){
@@ -356,9 +379,11 @@ _**range**_
 >			 [ 2, 3, -3 ]  
 > ```
 
-## MDArray.loop( <mdarray> )
+## MDArray.loop( mdarray )
+_**mdarray**_
 
-loops over over point in the given MDArray.
+if an `MDArray` is provided, the loop is over every element
+
 
 
 
