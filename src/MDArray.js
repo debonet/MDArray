@@ -362,6 +362,9 @@ class MDArray extends Array{
 	static easy = class {
 		constructor (...vx){
 			const m = new MDArray( ...vx );
+			if (m.hasOwnProperty('raw')){
+				return m;
+			}
 			Object.defineProperty(m, 'raw', { value : m });
 			return new Proxy( m, MDArray.handler );
 		}
