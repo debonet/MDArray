@@ -1,6 +1,6 @@
 {
   "name": "@debonet/mdarray",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Multidimensional arrays for JS",
   "main": "src/MDArray.js",
   "directories": {
