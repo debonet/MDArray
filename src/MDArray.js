@@ -782,7 +782,7 @@ MDArray.easy.loopUpDown = function *loopUpDown( nm, dIn = 1 ){
 	for ( let n = 0; n < c; n ++ ){
 		for ( let d =- dIn; d <= dIn; d ++ ){
 			if ( d != 0 ){
-				yield [ ...nm.slice( 0, n ), nm[ n ] + d, ...nm.slice( n + 1 )];
+				yield new MDArray([ ...nm.slice( 0, n ), nm[ n ] + d, ...nm.slice( n + 1 )]);
 			}
 		}
 	}
