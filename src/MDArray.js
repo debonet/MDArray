@@ -759,7 +759,7 @@ MDArray.easy.loopAround = function* loopAround( nm, d = 1 ){
 	for ( dnm of MDArray.loop( ...vnc )){
 		if ( ! dnm.every(( n ) => n == 0 )){
 
-			yield nm.map(( x, n ) => x + dnm[ n ]);
+			yield nm.map(( x, nmPos ) => x + dnm[ nmPos[ 0 ]]);
 		}
 	}
 }
