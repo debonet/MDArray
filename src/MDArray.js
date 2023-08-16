@@ -277,6 +277,9 @@ class MDArray extends Array{
 		if (!x){
 			return xVal;
 		}
+		if ( nm[ c - 1] < 0 || nm[ c - 1] >= x.length ){
+			return xVal;
+		}		
 		x[ nm[ c-1 ]] = xVal;
 		return xVal;
 	}
