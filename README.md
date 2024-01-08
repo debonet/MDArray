@@ -124,7 +124,7 @@ Including function-oriented programming methods, e.g.:
 ```javascript
 	const mTwos = new MDArray(2,3,4,5,6).fill(2);
 
-	const mFours = myMDArray.map(( x ) => x * 2);
+	const mFours = mTwos.map(( x ) => x * 2);
 ```
 
 
